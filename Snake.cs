@@ -1,0 +1,178 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using Veldrid;
+
+namespace Snake
+{
+    public class Snake
+    {
+        private const string BodySprite = "snake-3.png";
+        private const string HeadSprite = "snake-head.png";
+        private readonly World _world;
+
+        public Vector2 HeadPosition => _positions.Last().Item1;
+
+        private readonly List<(Vector2, float)> _positions = new List<(Vector2, float)>();
+        private Vector2 _direction;
+        private Vector2 _previousDir;
+        private double _updateTimer;
+        private int _currentFood;
+        private double _updatePeriod = 0.3; // seconds
+        private double _speedupFactor = 0.95; // Each tick reduces period by this.
+        private double _minPeriod = 0.1;
+        private const int InitialSize = 1;
+        private bool _dead;
+
+        public bool Dead => _dead;
+
+        public Snake(World world)
+        {
+            _world = world;
+            Revive();
+        }
+
+        public void Revive()
+        {
+            _dead = false;
+
+            _currentFood = 0;
+            _direction = Vector2.UnitX;
+            _positions.Clear();
+            Vector2 pos = new Vector2(3, 3);
+            for (int i = 0; i < InitialSize; i++)
+            {
+                float rotation = GetRotation(_direction);
+                _positions.Add((pos + i * new Vector2(1, 0), rotation));
+            }
+        }
+
+        private float GetRotation(Vector2 direction)
+        {
+            if (direction == Vector2.UnitY) { return 0; }
+            if (direction == Vector2.UnitX) { return MathF.PI / 2; }
+            if (direction == -Vector2.UnitX) { return -MathF.PI / 2; }
+            else { return MathF.PI; }
+        }
+
+        public void Update(double deltaSeconds)
+        {
+            if (_dead)
+            {
+                return;
+            }
+
+            if (Input.GetKeyDown(Key.Left))
+            {
+                TryChangeDirection(new Vector2(-1, 0));
+            }
+            else if (Input.GetKeyDown(Key.Right))
+            {
+                TryChangeDirection(new Vector2(1, 0));
+            }
+            else if (Input.GetKeyDown(Key.Up))
+            {
+                TryChangeDirection(new Vector2(0, 1));
+            }
+            else if (Input.GetKeyDown(Key.Down))
+            {
+                TryChangeDirection(new Vector2(0, -1));
+            }
+
+            _updateTimer -= deltaSeconds;
+            if (Input.GetKey(Key.Space))
+            {
+                _updateTimer -= deltaSeconds * 2;
+            }
+            if (_updateTimer > 0)
+            {
+                return;
+            }
+            _updateTimer = _updatePeriod;
+
+            Vector2 newPos = HeadPosition + _direction;
+
+            if (Collides(newPos))
+            {
+                Die();
+                return;
+            }
+
+            if (newPos == _world.CurrentFoodLocation)
+            {
+                _world.CollectFood();
+                _updatePeriod = Math.Max(_minPeriod, _speedupFactor * _updatePeriod);
+                _currentFood += 3;
+            }
+
+            _previousDir = _direction;
+
+            _positions.Add((newPos, GetRotation(_direction)));
+
+            if (_currentFood > 0)
+            {
+                _currentFood--;
+            }
+
+            if (_currentFood == 0)
+            {
+                _positions.RemoveAt(0);
+            }
+        }
+
+        private void TryChangeDirection(Vector2 newDirection)
+        {
+            if (newDirection != -_previousDir)
+            {
+                _direction = newDirection;
+            }
+        }
+
+        private bool Collides(Vector2 newPos)
+        {
+            foreach ((Vector2 pos, float rotation) in _positions)
+            {
+                if (newPos == pos)
+                {
+                    return true;
+                }
+            }
+
+            return OffWorld(newPos);
+        }
+
+        private bool OffWorld(Vector2 newPos)
+        {
+            return newPos.X < 0 || newPos.X >= _world.Size.X
+                || newPos.Y < 0 || newPos.Y >= _world.Size.Y;
+        }
+
+        private void Die()
+        {
+            _dead = true;
+        }
+
+        public void Render(SpriteRenderer sr)
+        {
+            for (int i = 0; i < _positions.Count - 1; i++)
+            {
+                (Vector2 pos, float rotation) = _positions[i];
+                sr.AddSprite(
+                    pos * _world.CellSize,
+                    new Vector2(_world.CellSize, _world.CellSize),
+                    BodySprite,
+                    _dead ? new RgbaByte(255, 100, 100, 180) : RgbaByte.White,
+                    rotation);
+            }
+
+            (Vector2 headPos, float headRot) = _positions[_positions.Count - 1];
+            sr.AddSprite(
+                headPos * _world.CellSize,
+                new Vector2(_world.CellSize, _world.CellSize),
+                HeadSprite,
+                _dead ? new RgbaByte(255, 100, 100, 180) : RgbaByte.White,
+                headRot);
+        }
+    }
+}
