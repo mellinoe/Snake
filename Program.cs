@@ -19,7 +19,7 @@ namespace Snake
 
         public static int Main(string[] args)
         {
-            float cellSize = 32;
+            float cellSize = 16;
             Vector2 worldSize = new Vector2(64, 32);
             int width = (int)(worldSize.X * cellSize);
             int height = (int)(worldSize.Y * cellSize);
