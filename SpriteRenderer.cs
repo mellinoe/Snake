@@ -21,6 +21,7 @@ namespace Snake
 
         private Dictionary<string, (Texture, TextureView, ResourceSet)> _loadedImages
             = new Dictionary<string, (Texture, TextureView, ResourceSet)>();
+        private ResourceSet _textSet;
 
         public SpriteRenderer(GraphicsDevice gd)
         {
@@ -146,6 +147,21 @@ namespace Snake
             }
 
             _draws.Clear();
+        }
+
+        internal void RenderText(GraphicsDevice gd, CommandList cl, TextureView textureView, Vector2 pos)
+        {
+            cl.SetPipeline(_pipeline);
+            cl.SetGraphicsResourceSet(0, _orthoSet);
+            if (_textSet == null)
+            {
+                _textSet = gd.ResourceFactory.CreateResourceSet(new ResourceSetDescription(_texLayout, textureView, gd.PointSampler));
+            }
+
+            cl.SetGraphicsResourceSet(1, _textSet);
+            Texture target = textureView.Target;
+            cl.UpdateBuffer(_vertexBuffer, 0, new QuadVertex(pos, new Vector2(target.Width, target.Height)));
+            cl.Draw(4, 1, 0, 0);
         }
 
         private void EnsureBufferSize(GraphicsDevice gd, uint size)

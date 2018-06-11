@@ -6,19 +6,21 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Snake</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0004" />
     <PackageReference Include="Veldrid" Version="4.3.0-beta1-0049-g6044f9228c" />
     <PackageReference Include="Veldrid.StartupUtilities" Version="4.3.0-beta1-0049-g6044f9228c" />
     <PackageReference Include="Veldrid.ImageSharp" Version="4.3.0-beta1-0049-g6044f9228c" />
     <PackageReference Include="Veldrid.SPIRV" Version="1.0.0-beta2" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0004" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets/*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Assets/Shaders/*.spv" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets/Fonts/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

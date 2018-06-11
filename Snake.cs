@@ -10,6 +10,11 @@ namespace Snake
     {
         private const string BodySprite = "snake-3.png";
         private const string HeadSprite = "snake-head.png";
+        private const double InitialUpdatePeriod = 0.2125; // seconds
+        private const double SpeedupFactor = 0.9735;
+        private const double MinPeriod = 0.05;
+        private const int InitialSize = 3;
+
         private readonly World _world;
 
         public Vector2 HeadPosition => _positions.Last().Item1;
@@ -19,11 +24,11 @@ namespace Snake
         private Vector2 _previousDir;
         private double _updateTimer;
         private int _currentFood;
-        private double _updatePeriod = 0.3; // seconds
-        private double _speedupFactor = 0.95; // Each tick reduces period by this.
-        private double _minPeriod = 0.1;
-        private const int InitialSize = 1;
+        private double _updatePeriod;
         private bool _dead;
+
+        public int Score { get; private set; }
+        public event Action ScoreChanged;
 
         public bool Dead => _dead;
 
@@ -36,16 +41,23 @@ namespace Snake
         public void Revive()
         {
             _dead = false;
-
+            _updatePeriod = InitialUpdatePeriod;
             _currentFood = 0;
             _direction = Vector2.UnitX;
             _positions.Clear();
+            SetScore(0);
             Vector2 pos = new Vector2(3, 3);
             for (int i = 0; i < InitialSize; i++)
             {
                 float rotation = GetRotation(_direction);
                 _positions.Add((pos + i * new Vector2(1, 0), rotation));
             }
+        }
+
+        private void SetScore(int newScore)
+        {
+            Score = newScore;
+            ScoreChanged?.Invoke();
         }
 
         private float GetRotation(Vector2 direction)
@@ -95,6 +107,9 @@ namespace Snake
 
             if (Collides(newPos))
             {
+                Vector2 pos = _positions[_positions.Count - 1].Item1;
+                float rot = GetRotation(_direction);
+                _positions[_positions.Count - 1] = (pos, rot);
                 Die();
                 return;
             }
@@ -102,8 +117,9 @@ namespace Snake
             if (newPos == _world.CurrentFoodLocation)
             {
                 _world.CollectFood();
-                _updatePeriod = Math.Max(_minPeriod, _speedupFactor * _updatePeriod);
-                _currentFood += 3;
+                _updatePeriod = Math.Max(MinPeriod, SpeedupFactor * _updatePeriod);
+                _currentFood += 2;
+                SetScore(Score + 1);
             }
 
             _previousDir = _direction;

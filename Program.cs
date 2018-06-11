@@ -1,3 +1,5 @@
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Memory;
 using System;
 using System.Diagnostics;
 using System.Numerics;
@@ -16,13 +18,15 @@ namespace Snake
         private static SpriteRenderer _spriteRenderer;
         private static World _world;
         private static Snake _snake;
+        private static TextRenderer _textRenderer;
+        private const float CellSize = 32;
+        private static readonly Vector2 WorldSize = new Vector2(24, 16);
 
         public static int Main(string[] args)
         {
-            float cellSize = 16;
-            Vector2 worldSize = new Vector2(64, 32);
-            int width = (int)(worldSize.X * cellSize);
-            int height = (int)(worldSize.Y * cellSize);
+            Configuration.Default.MemoryManager = new SimpleGcMemoryManager();
+            int width = (int)(WorldSize.X * CellSize);
+            int height = (int)(WorldSize.Y * CellSize);
             WindowCreateInfo wci = new WindowCreateInfo(50, 50, width, height, WindowState.Normal, "Snake");
             GraphicsDeviceOptions options = new GraphicsDeviceOptions();
 #if DEBUG
@@ -36,8 +40,11 @@ namespace Snake
 
             _window.Resized += () => _gd.ResizeMainWindow((uint)_window.Width, (uint)_window.Height);
 
-            _world = new World(worldSize, cellSize);
+            _world = new World(WorldSize, CellSize);
             _snake = new Snake(_world);
+            _textRenderer = new TextRenderer(_gd);
+            _textRenderer.DrawText("0");
+            _snake.ScoreChanged += () => _textRenderer.DrawText(_snake.Score.ToString());
 
             Stopwatch sw = Stopwatch.StartNew();
             double previousTime = sw.Elapsed.TotalSeconds;
@@ -82,6 +89,12 @@ namespace Snake
             _snake.Render(_spriteRenderer);
             _world.Render(_spriteRenderer);
             _spriteRenderer.Draw(_gd, _cl);
+            Texture targetTex = _textRenderer.TextureView.Target;
+            Vector2 textPos = new Vector2(
+                (_window.Width / 2f) - targetTex.Width / 2f,
+                _window.Height - targetTex.Height - 10f);
+
+            _spriteRenderer.RenderText(_gd, _cl, _textRenderer.TextureView, textPos);
 
             _cl.End();
             _gd.SubmitCommands(_cl);
