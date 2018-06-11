@@ -2,6 +2,7 @@ using McMaster.Extensions.CommandLineUtils;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Memory;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Numerics;
 using Veldrid;
@@ -17,8 +18,10 @@ namespace Snake
         [Option(Description = "Enable high resolution rendering.", ShortName = "hr")]
         public bool HighResolution { get; } = false;
         [Option(Description ="The width of the gameplay grid.")]
+        [Range(4, 100)]
         public int Width { get; } = 24;
         [Option(Description = "The height of the gameplay grid.")]
+        [Range(4, 100)]
         public int Height { get; } = 16;
 
         private GraphicsDevice _gd;
