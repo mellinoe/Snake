@@ -29,12 +29,13 @@ namespace Snake
             int height = (int)(WorldSize.Y * CellSize);
             WindowCreateInfo wci = new WindowCreateInfo(50, 50, width, height, WindowState.Normal, "Snake");
             GraphicsDeviceOptions options = new GraphicsDeviceOptions();
+            _window = new Sdl2Window("Snake", 50, 50, width, height, SDL_WindowFlags.OpenGL, false);
 #if DEBUG
             options.Debug = true;
 #endif
             options.SyncToVerticalBlank = true;
             options.ResourceBindingModel = ResourceBindingModel.Improved;
-            VeldridStartup.CreateWindowAndGraphicsDevice(wci, options, out _window, out _gd);
+            _gd = VeldridStartup.CreateGraphicsDevice(_window, options);
             _cl = _gd.ResourceFactory.CreateCommandList();
             _spriteRenderer = new SpriteRenderer(_gd);
 
