@@ -24,4 +24,14 @@
     <Content Include="Assets/Fonts/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/mellinoe/Snake/master/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright>Copyright 2018 (c) Eric Mellino. All rights reserved.</Copyright>
+    <Authors>Eric Mellino</Authors>
+    <RepositoryUrl>https://github.com/mellinoe/snake</RepositoryUrl>
+    <Description>A "Snake" video game, but it's a .NET global tool.</Description>
+    <PackageTags>Snake Video Game Tool</PackageTags>
+  </PropertyGroup>
+
 </Project>
