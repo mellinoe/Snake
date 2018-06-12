@@ -15,10 +15,10 @@ namespace Snake
     class Program
     {
         // Command line arguments
-        [Option(Description = "Enable high resolution rendering.", ShortName = "hr")]
-        public bool HighResolution { get; } = false;
+        [Option(Description = "Enable low resolution rendering.", ShortName = "lr")]
+        public bool LowResolution { get; } = false;
 
-        [Option(Description ="The width of the gameplay grid.")]
+        [Option(Description = "The width of the gameplay grid.")]
         [Range(10, 100)]
         public int Width { get; } = 32;
 
@@ -48,7 +48,7 @@ namespace Snake
 
         public int OnExecute()
         {
-            _cellSize = HighResolution ? HighResCellSize : LowResCellSize;
+            _cellSize = LowResolution ? LowResCellSize : HighResCellSize;
             _worldSize = new Vector2(Width, Height);
 
             Configuration.Default.MemoryManager = new SimpleGcMemoryManager();
