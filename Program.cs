@@ -20,11 +20,11 @@ namespace Snake
 
         [Option(Description ="The width of the gameplay grid.")]
         [Range(10, 100)]
-        public int Width { get; } = 24;
+        public int Width { get; } = 32;
 
         [Option(Description = "The height of the gameplay grid.")]
         [Range(10, 100)]
-        public int Height { get; } = 16;
+        public int Height { get; } = 24;
 
         private GraphicsDevice _gd;
         private Sdl2Window _window;

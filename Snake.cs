@@ -11,7 +11,7 @@ namespace Snake
         private const string BodySprite = "snake-3.png";
         private const string HeadSprite = "snake-head.png";
         private const double InitialUpdatePeriod = 0.2125; // seconds
-        private const double SpeedupFactor = 0.9735;
+        private const double SpeedupFactor = 0.97;
         private const double MinPeriod = 0.05;
         private const int InitialSize = 3;
 
