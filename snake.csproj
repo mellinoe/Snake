@@ -7,6 +7,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Snake</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <PackageVersion>$(AssemblyVersion)</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -13,6 +13,7 @@ namespace Snake
         private readonly List<SpriteInfo> _draws = new List<SpriteInfo>();
 
         private DeviceBuffer _vertexBuffer;
+        private DeviceBuffer _textBuffer;
         private DeviceBuffer _orthoBuffer;
         private ResourceLayout _orthoLayout;
         private ResourceSet _orthoSet;
@@ -28,6 +29,7 @@ namespace Snake
             ResourceFactory factory = gd.ResourceFactory;
 
             _vertexBuffer = factory.CreateBuffer(new BufferDescription(1000, BufferUsage.VertexBuffer | BufferUsage.Dynamic));
+            _textBuffer = factory.CreateBuffer(new BufferDescription(QuadVertex.VertexSize, BufferUsage.VertexBuffer | BufferUsage.Dynamic));
             _orthoBuffer = factory.CreateBuffer(new BufferDescription(64, BufferUsage.UniformBuffer));
 
             _orthoLayout = factory.CreateResourceLayout(
@@ -152,15 +154,15 @@ namespace Snake
         internal void RenderText(GraphicsDevice gd, CommandList cl, TextureView textureView, Vector2 pos)
         {
             cl.SetPipeline(_pipeline);
+            cl.SetVertexBuffer(0, _textBuffer);
             cl.SetGraphicsResourceSet(0, _orthoSet);
             if (_textSet == null)
             {
                 _textSet = gd.ResourceFactory.CreateResourceSet(new ResourceSetDescription(_texLayout, textureView, gd.PointSampler));
             }
-
             cl.SetGraphicsResourceSet(1, _textSet);
             Texture target = textureView.Target;
-            cl.UpdateBuffer(_vertexBuffer, 0, new QuadVertex(pos, new Vector2(target.Width, target.Height)));
+            cl.UpdateBuffer(_textBuffer, 0, new QuadVertex(pos, new Vector2(target.Width, target.Height)));
             cl.Draw(4, 1, 0, 0);
         }
 
