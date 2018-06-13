@@ -7,7 +7,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Snake</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
     <PackageVersion>$(AssemblyVersion)</PackageVersion>
   </PropertyGroup>
 
@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets/*" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="Assets/Shaders/*.spv" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="Assets/Fonts/*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets/*" CopyToOutputDirectory="PreserveNewest" Pack="false" />
+    <Content Include="Assets/Shaders/*.spv" CopyToOutputDirectory="PreserveNewest" Pack="false" />
+    <Content Include="Assets/Fonts/*" CopyToOutputDirectory="PreserveNewest" Pack="false" />
   </ItemGroup>
 
   <PropertyGroup>
