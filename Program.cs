@@ -51,7 +51,7 @@ namespace Snake
             _cellSize = LowResolution ? LowResCellSize : HighResCellSize;
             _worldSize = new Vector2(Width, Height);
 
-            Configuration.Default.MemoryManager = new SimpleGcMemoryManager();
+            Configuration.Default.MemoryAllocator = new SixLabors.Memory.SimpleGcMemoryAllocator();
             int width = (int)(_worldSize.X * _cellSize);
             int height = (int)(_worldSize.Y * _cellSize);
             WindowCreateInfo wci = new WindowCreateInfo(50, 50, width, height, WindowState.Normal, "Snake");

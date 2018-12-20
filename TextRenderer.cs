@@ -2,7 +2,6 @@
 using System.Numerics;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Text;
 using SixLabors.Fonts;
 using System.Linq;
 using Veldrid;
@@ -11,6 +10,7 @@ using System;
 using SixLabors.Primitives;
 using System.Runtime.CompilerServices;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Snake
 {
@@ -42,7 +42,7 @@ namespace Snake
 
         public unsafe void DrawText(string text)
         {
-            fixed (void* data = &_image.DangerousGetPinnableReferenceToPixelBuffer())
+            fixed (void* data = &MemoryMarshal.GetReference(_image.GetPixelSpan()))
             {
                 Unsafe.InitBlock(data, 0, (uint)(_image.Width * _image.Height * 4));
             }
@@ -62,7 +62,7 @@ namespace Snake
                     new PointF());
             });
 
-            fixed (void* data = &_image.DangerousGetPinnableReferenceToPixelBuffer())
+            fixed (void* data = &MemoryMarshal.GetReference(_image.GetPixelSpan()))
             {
                 uint size = (uint)(_image.Width * _image.Height * 4);
                 _gd.UpdateTexture(_texture, (IntPtr)data, size, 0, 0, 0, _texture.Width, _texture.Height, 1, 0, 0);

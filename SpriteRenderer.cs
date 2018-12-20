@@ -58,7 +58,7 @@ namespace Snake
                             new VertexElementDescription("Tint", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Byte4_Norm),
                             new VertexElementDescription("Rotation", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float1))
                     },
-                    factory.CreateFromSPIRV(
+                    factory.CreateFromSpirv(
                         new ShaderDescription(ShaderStages.Vertex, LoadShaderBytes("sprite.vert.spv"), "main"),
                         new ShaderDescription(ShaderStages.Fragment, LoadShaderBytes("sprite.frag.spv"), "main"),
                         GetCompilationOptions(factory))),
@@ -66,11 +66,11 @@ namespace Snake
                 gd.MainSwapchain.Framebuffer.OutputDescription));
         }
 
-        private CompilationOptions GetCompilationOptions(ResourceFactory factory)
+        private CrossCompileOptions GetCompilationOptions(ResourceFactory factory)
         {
-            return new CompilationOptions(false, false, new SpecializationConstant[]
+            return new CrossCompileOptions(false, false, new SpecializationConstant[]
             {
-                SpecializationConstant.Create(0, false)
+                new SpecializationConstant(0, false)
             });
         }
 
